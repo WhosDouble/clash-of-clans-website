@@ -33,11 +33,9 @@ export default async function handler(
         searchQuery as string
       )}`;
     } else {
-      return res
-        .status(400)
-        .json({
-          error: "Invalid searchType. Supported types: 'clan', 'player'",
-        });
+      return res.status(400).json({
+        error: "Invalid searchType. Supported types: 'clan', 'player'",
+      });
     }
 
     // Fetch data from Clash of Clans API
@@ -61,6 +59,6 @@ export default async function handler(
     // Return the fetched data to the client
     return res.status(200).json(data);
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    return res.status(500).json({ error });
   }
 }
