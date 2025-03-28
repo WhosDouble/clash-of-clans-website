@@ -5,7 +5,7 @@ export default function ClanInfo() {
   const [clanData, setClanData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [clanTag, setClanTag] = useState("#2Y2J0LQJ"); // Example clan tag
+  const [clanTag, setClanTag] = useState("#2Y2J0LQJ");
 
   useEffect(() => {
     const fetchClanData = async () => {
@@ -13,22 +13,29 @@ export default function ClanInfo() {
         const response = await fetch(
           `/api/clash/clans/${encodeURIComponent(clanTag)}`
         );
-        const data = await response.json();
 
+        // Check if the response is ok (status code 200-299)
         if (!response.ok) {
-          throw new Error(data.error || "Failed to fetch clan data.");
+          const errorText = await response.text(); // Get the raw response text
+          throw new Error(
+            `Failed to fetch clan data. Status: ${response.status}. ${errorText}`
+          );
         }
 
-        setClanData(data);
+        // Attempt to parse the response as JSON
+        const data = await response.json();
+
+        setClanData(data); // Set the clan data state
       } catch (err: any) {
+        // Handle errors
         setError(err.message);
       } finally {
-        setLoading(false);
+        setLoading(false); // Set loading state to false after completion
       }
     };
 
     fetchClanData();
-  }, [clanTag]); // Re-fetch when the clanTag changes
+  }, [clanTag]); // Re-run this effect when the clanTag changes
 
   return (
     <div>
